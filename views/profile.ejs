@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('partials/head', { title: 'Company profile — Catalog Reels' }) %>
+</head>
+<body>
+  <%- include('partials/nav') %>
+
+  <div class="page-wrap" style="max-width: 560px;">
+    <div class="page-header">
+      <div>
+        <h1>Company profile</h1>
+        <p>This shows up alongside every item you list.</p>
+      </div>
+    </div>
+
+    <% if (error) { %><div class="form-error"><%= error %></div><% } %>
+    <% if (success) { %><div class="form-success"><%= success %></div><% } %>
+
+    <form action="/dashboard/profile" method="POST">
+      <div class="field">
+        <label for="name">Company name</label>
+        <input type="text" id="name" name="name" required value="<%= company.name %>" />
+      </div>
+      <div class="field">
+        <label for="location">Location</label>
+        <input type="text" id="location" name="location" value="<%= company.location || '' %>" />
+      </div>
+      <div class="field">
+        <label for="website">Website</label>
+        <input type="text" id="website" name="website" value="<%= company.website || '' %>" />
+      </div>
+      <div class="field">
+        <label for="description">Description</label>
+        <textarea id="description" name="description"><%= company.description || '' %></textarea>
+      </div>
+      <button class="btn btn-primary" type="submit">Save changes</button>
+    </form>
+  </div>
+</body>
+</html>

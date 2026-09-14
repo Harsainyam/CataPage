@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('partials/head', { title: item ? 'Edit item — Catalog Reels' : 'Add item — Catalog Reels' }) %>
+</head>
+<body>
+  <%- include('partials/nav') %>
+
+  <div class="page-wrap" style="max-width: 640px;">
+    <div class="page-header">
+      <div>
+        <h1><%= item ? 'Edit item' : 'Add a catalog item' %></h1>
+        <p>This is what buyers will see as a full-screen card in the feed.</p>
+      </div>
+    </div>
+
+    <% if (error) { %><div class="form-error"><%= error %></div><% } %>
+
+    <form action="<%= item ? `/dashboard/edit/${item._id}` : '/dashboard/new' %>" method="POST" enctype="multipart/form-data">
+      <div class="field">
+        <label for="title">Title</label>
+        <input type="text" id="title" name="title" required value="<%= item ? item.title : '' %>" placeholder="e.g. XR-40 Combine Harvester" />
+      </div>
+
+      <div class="field">
+        <label for="category">Category</label>
+        <input type="text" id="category" name="category" required value="<%= item ? item.category : '' %>" placeholder="e.g. Agricultural Machinery" />
+      </div>
+
+      <div class="field">
+        <label for="description">Description</label>
+        <textarea id="description" name="description" required placeholder="What it does, who it's for, key selling points..."><%= item ? item.description : '' %></textarea>
+      </div>
+
+      <div class="field">
+        <label for="price">Price (optional)</label>
+        <input type="text" id="price" name="price" value="<%= item && item.price ? item.price : '' %>" placeholder="e.g. $42,000 or 'On request'" />
+      </div>
+
+      <div class="field">
+        <label for="tags">Tags (comma separated)</label>
+        <input type="text" id="tags" name="tags" value="<%= item && item.tags ? item.tags.join(', ') : '' %>" placeholder="e.g. harvester, agriculture, diesel" />
+        <span class="field-hint">Buyers filter and search by these — be specific.</span>
+      </div>
+
+      <div class="field">
+        <label for="specs">Specs (one "Label: Value" per line, optional)</label>
+        <textarea id="specs" name="specs" placeholder="Engine: 240 HP&#10;Fuel: Diesel&#10;Warranty: 2 years"><%= item && item.specs ? item.specs.map(s => `${s.label}: ${s.value}`).join('\n') : '' %></textarea>
+      </div>
+
+      <div class="field">
+        <label for="media">Photo</label>
+        <input type="file" id="media" name="media" accept="image/*" <%= item ? '' : 'required' %> />
+        <span class="field-hint"><%= item ? 'Leave empty to keep the current photo.' : 'Vertical or square photos work best in the feed.' %></span>
+      </div>
+
+      <button class="btn btn-primary" type="submit" style="width:100%;"><%= item ? 'Save changes' : 'Publish to feed' %></button>
+    </form>
+  </div>
+</body>
+</html>

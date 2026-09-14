@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('partials/head', { title: 'Dashboard — Catalog Reels' }) %>
+</head>
+<body>
+  <%- include('partials/nav') %>
+
+  <div class="page-wrap">
+    <div class="page-header">
+      <div>
+        <h1>Your catalog</h1>
+        <p>Manage the items suppliers and buyers see in the feed.</p>
+      </div>
+      <div style="display:flex; gap:10px;">
+        <a class="btn btn-ghost" href="/dashboard/profile">Edit profile</a>
+        <a class="btn btn-primary" href="/dashboard/new">+ Add item</a>
+      </div>
+    </div>
+
+    <div class="stats-strip">
+      <div class="stat">
+        <div class="num"><%= items.length %></div>
+        <div class="label">Listed items</div>
+      </div>
+      <div class="stat">
+        <div class="num"><%= items.reduce((sum, i) => sum + (i.views || 0), 0) %></div>
+        <div class="label">Total views</div>
+      </div>
+    </div>
+
+    <% if (!items.length) { %>
+      <div class="empty-state" style="height:auto; padding:60px 0;">
+        <h2>No items yet</h2>
+        <p>Add your first product or service to appear in the public feed.</p>
+        <a class="btn btn-primary" href="/dashboard/new">+ Add item</a>
+      </div>
+    <% } else { %>
+      <div class="item-list">
+        <% items.forEach(function(item) { %>
+          <div class="item-row">
+            <img class="thumb" src="<%= item.mediaUrl %>" alt="" onerror="this.style.opacity=0" />
+            <div class="meta">
+              <h3><%= item.title %></h3>
+              <p><%= item.category %> · <%= item.views || 0 %> views</p>
+            </div>
+            <div class="row-actions">
+              <a class="btn btn-ghost" href="/item/<%= item._id %>">View</a>
+              <a class="btn btn-ghost" href="/dashboard/edit/<%= item._id %>">Edit</a>
+              <form action="/dashboard/delete/<%= item._id %>" method="POST" style="margin:0;" onsubmit="return confirm('Delete this item?');">
+                <button class="btn btn-ghost btn-danger" type="submit">Delete</button>
+              </form>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+    <% } %>
+  </div>
+</body>
+</html>

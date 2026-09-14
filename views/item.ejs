@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('partials/head', { title: item.title + ' — Catalog Reels' }) %>
+</head>
+<body>
+  <%- include('partials/nav') %>
+
+  <div class="page-wrap">
+    <div class="item-hero">
+      <div class="media">
+        <img src="<%= item.mediaUrl %>" alt="<%= item.title %>" />
+      </div>
+      <div class="info">
+        <div class="reel-company">
+          <span><%= item.company ? item.company.name : 'Unknown supplier' %></span>
+          <% if (item.company && item.company.verified) { %><span class="verified">&#10003; Verified</span><% } %>
+        </div>
+        <h1 class="reel-title" style="font-size:2rem; margin:8px 0;"><%= item.title %></h1>
+        <% if (avgRating) { %>
+          <p style="color:var(--accent); font-weight:600;">&#9733; <%= avgRating %> · <%= reviews.length %> review<%= reviews.length === 1 ? '' : 's' %></p>
+        <% } %>
+        <p class="reel-desc" style="max-width:none;"><%= item.description %></p>
+        <% if (item.price) { %><div class="reel-price" style="font-size:1.3rem; margin:12px 0;"><%= item.price %></div><% } %>
+
+        <% if (item.specs && item.specs.length) { %>
+          <div class="reel-specs">
+            <% item.specs.forEach(function(s) { %>
+              <div class="spec-row"><span class="spec-label"><%= s.label %></span><span class="spec-value"><%= s.value %></span></div>
+            <% }) %>
+          </div>
+        <% } %>
+
+        <% if (item.tags && item.tags.length) { %>
+          <div class="reel-tags" style="margin-top:14px;">
+            <% item.tags.forEach(function(t) { %>
+              <a class="tag-chip" href="/?tag=<%= encodeURIComponent(t) %>"><%= t %></a>
+            <% }) %>
+          </div>
+        <% } %>
+
+        <% if (item.company && item.company.website) { %>
+          <a class="btn btn-primary" style="margin-top:20px; display:inline-block; width:fit-content;" href="<%= item.company.website %>" target="_blank" rel="noopener">Contact supplier</a>
+        <% } %>
+      </div>
+    </div>
+
+    <h2 class="section-title" id="reviews">Reviews</h2>
+
+    <% if (!reviews.length) { %>
+      <p style="color:var(--text-muted);">No reviews yet. Be the first to leave one.</p>
+    <% } %>
+
+    <% reviews.forEach(function(r) { %>
+      <div class="review-card">
+        <div class="stars"><%= '★'.repeat(r.rating) %><%= '☆'.repeat(5 - r.rating) %></div>
+        <div class="author"><%= r.authorName %></div>
+        <p><%= r.comment %></p>
+      </div>
+    <% }) %>
+
+    <h3 class="section-title" style="font-size:1rem;">Leave a review</h3>
+    <form action="/item/<%= item._id %>/reviews" method="POST" style="max-width:480px;">
+      <div class="field">
+        <label for="authorName">Your name</label>
+        <input type="text" id="authorName" name="authorName" required />
+      </div>
+      <div class="field">
+        <label for="rating">Rating</label>
+        <select id="rating" name="rating" required>
+          <option value="5">5 - Excellent</option>
+          <option value="4">4 - Good</option>
+          <option value="3">3 - Average</option>
+          <option value="2">2 - Poor</option>
+          <option value="1">1 - Bad</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="comment">Comment</label>
+        <textarea id="comment" name="comment" required></textarea>
+      </div>
+      <button class="btn btn-primary" type="submit">Post review</button>
+    </form>
+  </div>
+</body>
+</html>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('partials/head', { title: 'Catalog Reels — discover suppliers' }) %>
+</head>
+<body>
+  <%- include('partials/nav') %>
+
+  <div class="search-bar">
+    <form action="/" method="GET">
+      <input type="text" name="q" placeholder="Search combine harvesters, electrical panels, anything..." value="<%= query %>" />
+      <button type="submit">Search</button>
+    </form>
+    <% if (categories.length) { %>
+      <div class="tag-row">
+        <a href="/" class="tag-chip <%= !activeCategory ? 'active' : '' %>">All categories</a>
+        <% categories.forEach(function(c) { %>
+          <a href="/?category=<%= encodeURIComponent(c) %>" class="tag-chip <%= activeCategory === c ? 'active' : '' %>"><%= c %></a>
+        <% }) %>
+      </div>
+    <% } %>
+    <% if (topTags.length) { %>
+      <div class="tag-row">
+        <% topTags.forEach(function(t) { %>
+          <a href="/?tag=<%= encodeURIComponent(t) %>" class="tag-chip <%= activeTag === t ? 'active' : '' %>"><%= t %></a>
+        <% }) %>
+      </div>
+    <% } %>
+  </div>
+
+  <% if (!items.length) { %>
+    <div class="empty-state">
+      <h2>No catalog items found</h2>
+      <p>Try a different search term, or clear your filters.</p>
+      <a class="btn btn-primary" href="/">Back to feed</a>
+    </div>
+  <% } else { %>
+    <div class="feed" id="feed" data-loaded="<%= items.length %>" data-has-more="<%= hasMore %>">
+      <% items.forEach(function(item) { %>
+        <article class="reel">
+          <div class="reel-media">
+            <img src="<%= item.mediaUrl %>" alt="<%= item.title %>" loading="lazy" />
+          </div>
+          <span class="reel-category-badge"><%= item.category %></span>
+          <div class="reel-panel">
+            <div class="reel-company">
+              <span><%= item.company ? item.company.name : 'Unknown supplier' %></span>
+              <% if (item.company && item.company.verified) { %>
+                <span class="verified">&#10003; Verified</span>
+              <% } %>
+            </div>
+            <h2 class="reel-title"><%= item.title %></h2>
+            <p class="reel-desc"><%= item.description %></p>
+            <% if (item.price) { %><div class="reel-price"><%= item.price %></div><% } %>
+            <% if (item.specs && item.specs.length) { %>
+              <div class="reel-specs">
+                <% item.specs.slice(0, 5).forEach(function(s) { %>
+                  <div class="spec-row"><span class="spec-label"><%= s.label %></span><span class="spec-value"><%= s.value %></span></div>
+                <% }) %>
+              </div>
+            <% } %>
+            <% if (item.tags && item.tags.length) { %>
+              <div class="reel-tags">
+                <% item.tags.forEach(function(t) { %>
+                  <a class="tag-chip" href="/?tag=<%= encodeURIComponent(t) %>"><%= t %></a>
+                <% }) %>
+              </div>
+            <% } %>
+            <div class="reel-cta">
+              <a class="btn btn-primary" href="/item/<%= item._id %>">View details</a>
+            </div>
+          </div>
+        </article>
+      <% }) %>
+    </div>
+  <% } %>
+
+  <script src="/js/feed.js"></script>
+</body>
+</html>
